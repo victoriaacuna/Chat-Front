@@ -1,0 +1,51 @@
+<div class="card mx-4 my-4">
+
+  <div class="card-header">
+    <ul class="nav nav-pills card-header-pills">
+      <li *ngIf="!conectado" class="nav-item mr-2">
+        <input type="text" [(ngModel)]="mensaje.username" class="form-control" placeholder="Tu username..." name="username">
+      </li>
+      <li class="nav-item mr-2">
+        <button [disabled]="!mensaje.username" *ngIf="!conectado" class="btn btn-success" (click)="conectar()" type="button">Conectar</button>
+      </li>
+      <li class="nav-item">
+        <button *ngIf="conectado" class="btn btn-warning" (click)="desconectar()" type="button">Desconectar</button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- EL " #scrollChat [scrollTop]="scrollChat.scrollHeight" "
+    ESTO ES PARA QUE SIEMPRE UNO ESTÉ SITUADO AL FINAL DE LA CONVERSACIÓN
+  -->
+  <div #scrollChat [scrollTop]="scrollChat.scrollHeight" class="card-body" *ngIf="conectado" style="overflow-y: scroll; height: 400px;">
+    <ul class="list-group list-group-flush">
+      <li *ngFor="let mensaje of mensajes" class="list-group-item list-group-item-light">
+        <span *ngIf="mensaje.type=='NUEVO USUARIO'">
+          {{mensaje.fecha | date:'shortTime'}} @ {{mensaje.texto}}
+          <span [ngStyle]="{'color': mensaje.color}">
+            {{mensaje.username}}
+          </span>
+        </span>
+        <span *ngIf="mensaje.type=='MENSAJE'">
+          {{mensaje.fecha | date:'shortTime'}}
+          <span [ngStyle]="{'color': mensaje.color}">
+            {{mensaje.username}}
+          </span>
+          dice: <br> {{mensaje.texto}}
+        </span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card-footer" *ngIf="conectado">
+    <form class="form-inline">
+      <div class="form-group mx-3">
+        <input type="text" [(ngModel)]="mensaje.texto" class="form-control"
+          placeholder="Escribe un mensaje..." name="texto"
+          (keyup)="escribiendoEvento()">
+      </div>
+      <button (click)="enviarMensaje()" class="btn btn-primary" type="submit">Enviar</button>
+    </form>
+    <div>{{escribiendo}}</div>
+  </div>
+</div>
